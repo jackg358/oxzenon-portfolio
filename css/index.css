@@ -1,0 +1,78 @@
+body{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background: linear-gradient(135deg, #000000, #007BFF);
+    color: aliceblue;
+    backface-visibility: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+background-attachment: fixed;
+}
+
+.head{
+    color: white;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100px; display: flex;
+    margin: auto;
+    /* background: black; */
+    align-content: center;
+    align-items: center;
+}
+
+#head-sidebar{
+    width: 30%;
+}
+
+#head-sidebar h1{
+    margin: 1em;
+}
+#head-sidebar,#head-navbar{
+    display: flex;
+    /* background-color: #007BFF; */
+    
+}
+#head-navbar{
+    /* background: white; */
+    align-items: center; 
+    text-align: center;
+    margin: .5em;
+    width: 40%;
+}
+
+#head-navbar a{
+    /* text-align: center; */
+    text-decoration: none ;
+    color: white;
+    margin: 1em;
+    align-items: center;
+    align-content: center;
+    /* justify-content: space-between; */
+}
+
+#head-navbar a:hover{
+   text-decoration: underline;
+   transition-duration: 1ms;
+   
+}
+
+#head-search{
+    width: 30%;
+    display: flex;
+    /* justify-content: flex-end; */
+    margin: 1em;
+
+}
+
+#head-search input{
+    width: 100%;
+    padding: .5em;
+    border-radius: 1em;
+    border: none;
+}
+
+#head-search ::placeholder{
+    color: rgb(159, 111, 21);
+    font-weight: bold;
+    text-align: center;
+    background: transparent;
+}
+
+

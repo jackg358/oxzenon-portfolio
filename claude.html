@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Oxzenon | Web3 Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #020b14;
+    --bg2: #040f1c;
+    --cyan: #00f5ff;
+    --green: #00ff88;
+    --purple: #7b2fff;
+    --pink: #ff2d78;
+    --text: #c8e6f0;
+    --muted: #4a7a99;
+    --card: rgba(0,245,255,0.04);
+    --border: rgba(0,245,255,0.12);
+    --glow: 0 0 20px rgba(0,245,255,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--cyan);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    box-shadow: 0 0 15px var(--cyan), 0 0 40px rgba(0,245,255,0.4);
+  }
+  .cursor-trail {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(0,245,255,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+  }
+
+  /* Grid BG */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scanline */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.05) 2px,
+      rgba(0,0,0,0.05) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+    animation: scanlines 8s linear infinite;
+  }
+  @keyframes scanlines {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(2,11,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-shadow: var(--glow);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--pink); }
+  .nav-links { display: flex; gap: 40px; }
+  .nav-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s, text-shadow 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--cyan);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 2; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: orbFloat 8s ease-in-out infinite;
+  }
+  .hero-orb.a { width: 500px; height: 500px; background: radial-gradient(circle, rgba(123,47,255,0.25), transparent 70%); top: -100px; left: -100px; animation-delay: 0s; }
+  .hero-orb.b { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,245,255,0.2), transparent 70%); bottom: -50px; right: -50px; animation-delay: -4s; }
+  .hero-orb.c { width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,45,120,0.15), transparent 70%); top: 40%; left: 60%; animation-delay: -2s; }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(30px, -30px) scale(1.05); }
+  }
+
+  .hero-content { position: relative; }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--green);
+    border: 1px solid rgba(0,255,136,0.3);
+    padding: 6px 18px;
+    border-radius: 2px;
+    margin-bottom: 30px;
+    background: rgba(0,255,136,0.05);
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-name {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff 0%, var(--cyan) 40%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    animation: fadeUp 0.8s 0.2s ease both;
+    text-shadow: none;
+  }
+
+  .hero-roles {
+    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+  .role-pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    padding: 7px 16px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+  .pill-cyan { border-color: var(--cyan); color: var(--cyan); background: rgba(0,245,255,0.06); }
+  .pill-green { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.06); }
+  .pill-purple { border-color: var(--purple); color: #a97eff; background: rgba(123,47,255,0.06); }
+  .pill-pink { border-color: var(--pink); color: var(--pink); background: rgba(255,45,120,0.06); }
+
+  .hero-desc {
+    max-width: 520px;
+    margin: 0 auto 50px;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--muted);
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 16px; justify-content: center;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .btn-primary {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    color: #000;
+    text-decoration: none;
+    border: none;
+    cursor: none;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(0,245,255,0.5); transform: translateY(-2px); }
+  .btn-outline {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    background: transparent;
+    color: var(--cyan);
+    text-decoration: none;
+    border: 1px solid var(--cyan);
+    cursor: none;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+  .btn-outline:hover { background: rgba(0,245,255,0.1); box-shadow: 0 0 20px rgba(0,245,255,0.3); transform: translateY(-2px); }
+
+  /* scroll indicator */
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    animation: fadeUp 1s 1s ease both;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(var(--cyan), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+  /* SKILLS */
+  #skills {
+    padding: 120px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; max-width: 60px;
+    height: 1px;
+    background: var(--cyan);
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 70px;
+    color: #fff;
+  }
+  .section-title .accent { color: var(--cyan); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover { border-color: rgba(0,245,255,0.3); transform: translateY(-4px); }
+  .skill-card:hover::before { opacity: 1; }
+
+  .skill-card.purple-accent::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+  .skill-card.purple-accent:hover { border-color: rgba(123,47,255,0.3); }
+  .skill-card.green-accent::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+  .skill-card.green-accent:hover { border-color: rgba(0,255,136,0.3); }
+  .skill-card.pink-accent::before { background: linear-gradient(90deg, transparent, var(--pink), transparent); }
+  .skill-card.pink-accent:hover { border-color: rgba(255,45,120,0.3); }
+
+  .skill-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .skill-card-title {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .skill-card-desc {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+  }
+
+  /* STATS TICKER */
+  .ticker-wrap {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    background: rgba(0,245,255,0.02);
+    padding: 14px 0;
+    position: relative; z-index: 2;
+  }
+  .ticker {
+    display: flex; gap: 60px;
+    white-space: nowrap;
+    animation: ticker 20s linear infinite;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+  .ticker span { color: var(--cyan); }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 120px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-text p {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .about-text p strong { color: var(--cyan); font-weight: 600; }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    transition: border-color 0.3s;
+  }
+  .stat-box:hover { border-color: rgba(0,245,255,0.3); }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 2.2rem;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,245,255,0.5);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* CONTACT */
+  #contact {
+    padding: 120px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .contact-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
+  }
+  .contact-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(0,245,255,0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  .contact-tagline {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 40px;
+    line-height: 1.8;
+    max-width: 500px;
+    margin-left: auto; margin-right: auto;
+  }
+
+  .social-links {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 50px;
+  }
+  .social-link {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.3s, color 0.3s, box-shadow 0.3s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .social-link:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 15px rgba(0,245,255,0.2); }
+
+  .email-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 20px rgba(0,245,255,0.4);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 2;
+  }
+  footer p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+  footer span { color: var(--cyan); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* GLITCH effect on name */
+  .hero-name {
+    position: relative;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { gap: 20px; }
+    #skills, #contact { padding: 80px 24px; }
+    #about { padding: 80px 24px; grid-template-columns: 1fr; gap: 40px; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<nav>
+  <a class="nav-logo" href="#hero">OX<span>ZE</span>NON</a>
+  <div class="nav-links">
+    <a href="#skills">Skills</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-orb a"></div>
+  <div class="hero-orb b"></div>
+  <div class="hero-orb c"></div>
+  <div class="hero-content">
+    <div class="hero-tag">&#9632; Web3 Native &bull; On-Chain &bull; Always Building</div>
+    <h1 class="hero-name">OXZENON</h1>
+    <div class="hero-roles">
+      <span class="role-pill pill-cyan">FX Trader</span>
+      <span class="role-pill pill-green">Crypto Trader</span>
+      <span class="role-pill pill-purple">Memecoin Degen</span>
+      <span class="role-pill pill-pink">Bounty Writer</span>
+      <span class="role-pill pill-cyan">Frontend Dev</span>
+    </div>
+    <p class="hero-desc">
+      Navigating the decentralized frontier — trading markets, shipping code, and writing the future of Web3. Fully on-chain, always alpha.
+    </p>
+    <div class="hero-cta">
+      <a href="#skills" class="btn-primary">Explore Skills</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>BTC/USDT</span> &bull; +2.4% &bull; <span>ETH/USDT</span> &bull; -0.8% &bull; <span>EUR/USD</span> &bull; +0.3% &bull; <span>MEME/SOL</span> &bull; +142% &bull; <span>DEGEN MODE</span> &bull; ON &bull;
+    <span>BTC/USDT</span> &bull; +2.4% &bull; <span>ETH/USDT</span> &bull; -0.8% &bull; <span>EUR/USD</span> &bull; +0.3% &bull; <span>MEME/SOL</span> &bull; +142% &bull; <span>DEGEN MODE</span> &bull; ON &bull;
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">// Skills</div>
+  <h2 class="section-title">What I <span class="accent">Do</span></h2>
+  <div class="skills-grid">
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">📈</span>
+      <div class="skill-card-title">FX Trading</div>
+      <p class="skill-card-desc">Reading price action, managing risk, and executing high-probability setups across major forex pairs. Technical analysis is my language.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Price Action</span>
+        <span class="skill-tag">Technical Analysis</span>
+        <span class="skill-tag">Risk Management</span>
+        <span class="skill-tag">Swing Trading</span>
+      </div>
+    </div>
+
+    <div class="skill-card purple-accent reveal">
+      <span class="skill-icon">🔷</span>
+      <div class="skill-card-title">Crypto Trading</div>
+      <p class="skill-card-desc">Navigating volatile markets with on-chain data, sentiment analysis, and deep understanding of blockchain fundamentals. DeFi native.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">DeFi</span>
+        <span class="skill-tag">On-Chain Analysis</span>
+        <span class="skill-tag">Spot & Futures</span>
+        <span class="skill-tag">Tokenomics</span>
+      </div>
+    </div>
+
+    <div class="skill-card green-accent reveal">
+      <span class="skill-icon">🐸</span>
+      <div class="skill-card-title">Memecoin Trading</div>
+      <p class="skill-card-desc">Early-stage memecoin sniping, community analysis, and knowing when to ape in — and more importantly, when to exit.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Solana Ecosystem</span>
+        <span class="skill-tag">Sniping</span>
+        <span class="skill-tag">Community Intel</span>
+        <span class="skill-tag">Degen Plays</span>
+      </div>
+    </div>
+
+    <div class="skill-card pink-accent reveal">
+      <span class="skill-icon">✍️</span>
+      <div class="skill-card-title">Bounty Writing</div>
+      <p class="skill-card-desc">Contributing high-quality content for Web3 projects — articles, guides, threads, and campaign copy that actually converts.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Technical Writing</span>
+        <span class="skill-tag">Crypto Content</span>
+        <span class="skill-tag">Campaign Copy</span>
+        <span class="skill-tag">Threads</span>
+      </div>
+    </div>
+
+    <div class="skill-card reveal">
+      <span class="skill-icon">💻</span>
+      <div class="skill-card-title">Frontend Development</div>
+      <p class="skill-card-desc">Building clean, modern interfaces for the decentralized web. From dApp frontends to portfolio sites, I ship pixel-perfect UIs.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">HTML/CSS/JS</span>
+        <span class="skill-tag">React</span>
+        <span class="skill-tag">Web3.js</span>
+        <span class="skill-tag">dApp UI</span>
+      </div>
+    </div>
+
+    <div class="skill-card purple-accent reveal">
+      <span class="skill-icon">🌐</span>
+      <div class="skill-card-title">Web3 Ecosystem</div>
+      <p class="skill-card-desc">Deep knowledge of blockchain protocols, wallets, DEXs, NFTs, and DAOs. I live and breathe the decentralized internet.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Ethereum</span>
+        <span class="skill-tag">Solana</span>
+        <span class="skill-tag">DEX / CEX</span>
+        <span class="skill-tag">NFTs</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-text reveal">
+    <div class="section-label">// About</div>
+    <h2 class="section-title" style="margin-bottom:30px;">The <span class="accent">Degen</span><br/>Behind the Screen</h2>
+    <p>I'm <strong>Oxzenon</strong> — a Web3 multi-hyphenate who moves between charts, code, and copy. I don't pick one lane. I operate across all of them.</p>
+    <p>From scalping FX sessions to aping early memecoins, writing bounty campaigns for emerging protocols, and building clean dApp interfaces — I bring a rare cross-disciplinary edge to everything I do.</p>
+    <p>The market never sleeps. Neither do I.</p>
+  </div>
+  <div class="about-stats reveal">
+    <div class="stat-box">
+      <div class="stat-num">3+</div>
+      <div class="stat-label">Years in Web3</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">50+</div>
+      <div class="stat-label">Bounties Done</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Degen Level</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Market Mode</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" style="justify-content:center;">// Contact</div>
+  <h2 class="section-title" style="margin-bottom:40px;">Let's <span class="accent">Connect</span></h2>
+  <div class="contact-box reveal">
+    <p class="contact-tagline">Got a project, collab, bounty opportunity, or just want to talk alpha? Find me across the decentralized web.</p>
+    <div class="social-links">
+      <a href="#" class="social-link">Twitter / X</a>
+      <a href="#" class="social-link">Telegram</a>
+      <a href="#" class="social-link">Discord</a>
+      <a href="#" class="social-link">GitHub</a>
+    </div>
+    <div class="email-display">oxzenon@email.com</div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2025 <span>OXZENON</span>. Built on-chain.</p>
+  <p>Powered by <span>Web3</span> vibes.</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursorTrail');
+  let mx = 0, my = 0, tx = 0, ty = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+
+  function animTrail() {
+    tx += (mx - tx) * 0.12;
+    ty += (my - ty) * 0.12;
+    trail.style.left = tx - 16 + 'px';
+    trail.style.top = ty - 16 + 'px';
+    requestAnimationFrame(animTrail);
+  }
+  animTrail();
+
+  // Hover scale
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(2)');
+    el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
